@@ -1,0 +1,46 @@
+spring:
+  application:
+     name: gateway-service
+  cloud:
+    discovery:
+      enabled: true
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+#      routes:
+#      - id: quotes_route
+#        uri: lb://quotes-service
+#        filters:
+#        - AddResponseHeader=Bar, X-Request=Foo
+#        predicates:
+#        - Path=/v1/**
+      routes:
+      - id: user_route
+        uri: http://httpbin.org
+        predicates:
+        - Host=**.pivotal.io
+        filters:
+        - name: Hystrix
+          args:
+            name: fallbackcmd
+            fallbackUri: forwad:/myfallback
+      - id: account_route
+        uri: http://httpbin.org
+        predicates:
+        - Host=**.example.com
+        filters:
+        - name: CircuitBreaker
+          args:
+            name: myCircuitBreaker
+            fallbackUri: forward:/myfallback
+  main:
+    allow-bean-definition-overriding: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+hystrix.command.fallbackcmd.execution.isolation.thread.timeoutInMilliseconds: 2000
+
