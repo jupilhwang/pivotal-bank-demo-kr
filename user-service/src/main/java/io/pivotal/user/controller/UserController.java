@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
+import reactor.core.publisher.Mono;
 
 /**
  * REST controller for the accounts microservice. Provides the following
@@ -47,18 +48,19 @@ public class UserController {
 	/**
 	 * REST call to retrieve the account with the given id as userId.
 	 * 
-	 * @param id
+	 * @param username
 	 *            The id of the user to retrieve.
 	 * @return The user object if found.
 	 */
 	@RequestMapping(value = "/users/{username}", method = RequestMethod.GET)
-	public ResponseEntity<User> find(@PathVariable("username") final String username) {
+	public Mono<ResponseEntity <User>> find(@PathVariable("username") final String username) {
 
 		logger.info("UserController.find: username=" + username);
 
 		User userResponse = this.service.findUser(username);
-		return new ResponseEntity<User>(userResponse, getNoCacheHeaders(), HttpStatus.OK);
+//		return new ResponseEntity<User>(userResponse, getNoCacheHeaders(), HttpStatus.OK);
 
+		return Mono.just(ResponseEntity.status(HttpStatus.OK).body(userResponse));
 	}
 
 	/**

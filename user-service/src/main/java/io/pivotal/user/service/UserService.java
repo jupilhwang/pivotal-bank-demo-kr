@@ -114,7 +114,7 @@ public class UserService {
 	/**
 	 * Saves the given account in the repository.
 	 * 
-	 * @param accountRequest
+	 * @param userRequest
 	 *            The account to save.
 	 * @return the id of the account.
 	 */
