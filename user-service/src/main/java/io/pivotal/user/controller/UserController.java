@@ -53,14 +53,17 @@ public class UserController {
 	 * @return The user object if found.
 	 */
 	@RequestMapping(value = "/users/{username}", method = RequestMethod.GET)
-	public Mono<ResponseEntity <User>> find(@PathVariable("username") final String username) {
+	public ResponseEntity<Mono<User>> find(@PathVariable("username") final String username) {
 
 		logger.info("UserController.find: username=" + username);
 
 		User userResponse = this.service.findUser(username);
 //		return new ResponseEntity<User>(userResponse, getNoCacheHeaders(), HttpStatus.OK);
 
-		return Mono.just(ResponseEntity.status(HttpStatus.OK).body(userResponse));
+//		return Mono.just(ResponseEntity.status(HttpStatus.OK).body(userResponse));
+		return ResponseEntity
+				.status(HttpStatus.OK)
+				.body(Mono.just(userResponse));
 	}
 
 	/**
